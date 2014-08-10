@@ -97,7 +97,6 @@ command_bind unicode => sub {
     }
     fork_wrapper(sub { # Child
       my($fh) = @_;
-      my @found;
       my $data = "";
       # This is not a public API at all, but taking 2 minutes when using the
       # public API is a bit of a joke, so we take advantage of perl's cache if
@@ -112,9 +111,7 @@ command_bind unicode => sub {
           }
         }
       }
-      while ($data =~ /(?:^([A-F0-9]+).*$re)/gm) {
-        push @found, $1;
-      }
+      my @found = $data =~ /(?:^([A-F0-9]+).*$re)/gm;
       if(@found > 100) {
         syswrite $fh, "- More than 100 matches found, aborting";
       } else {
